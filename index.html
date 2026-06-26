@@ -4,8 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lilium</title>
-
     <style>
+      /* Mobile bottom cover */
+      .mobile-bottom-cover {
+        display: none;
+      }
+
+      @media (max-width: 600px) {
+        .mobile-bottom-cover {
+          display: block;
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 17vh;
+          z-index: 8;
+          pointer-events: none;
+          background: linear-gradient(
+            to top,
+            rgba(1, 18, 18, 1) 0%,
+            rgba(1, 18, 18, 0.95) 45%,
+            rgba(1, 18, 18, 0.65) 75%,
+            rgba(1, 18, 18, 0) 100%
+          );
+        }
+      }
       * {
         box-sizing: border-box;
       }
@@ -128,7 +151,7 @@
     <div class="msg m4">
       Every girl is a story<br />of strength and grace. 🌷
     </div>
-
+    <div class="mobile-bottom-cover"></div>
     <canvas id="canvas"></canvas>
     <script>
       const canvas = document.getElementById("canvas");
