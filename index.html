@@ -561,7 +561,26 @@
       }
 
       function foregroundGrassLayer(cx, groundY, s, now, grow, layout) {
-        // This layer is drawn AFTER the lily, so the lower stem/root looks behind the grass.
+        // Drawn AFTER the lily, so the lower stem/root is hidden and looks like it grows from behind the grass.
+
+        // soft dark-green mound around the root/base
+        const mound = ctx.createRadialGradient(
+          cx,
+          groundY + 24 * s,
+          5 * s,
+          cx,
+          groundY + 24 * s,
+          130 * s,
+        );
+        mound.addColorStop(0, `rgba(2, 30, 20, ${0.72 * grow})`);
+        mound.addColorStop(0.55, `rgba(6, 70, 46, ${0.38 * grow})`);
+        mound.addColorStop(1, "rgba(6, 70, 46, 0)");
+        ctx.fillStyle = mound;
+        ctx.beginPath();
+        ctx.ellipse(cx, groundY + 26 * s, 130 * s, 32 * s, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // main front grass layer
         for (let i = 0; i < Math.floor(layout.grassCount * 0.95); i++) {
           const x = W * 0.02 + seedNoise(i + 520) * W * 0.96;
           const h = 52 * s + seedNoise(i + 530) * 78 * s;
@@ -575,20 +594,36 @@
           );
         }
 
-        for (let i = 0; i < 18; i++) {
-          const x = cx - 210 * s + i * 25 * s + Math.sin(i * 1.7) * 8 * s;
-          const y = groundY + 8 * s - (i % 5) * 8 * s;
+        // extra dense center grass to cover the flower root and lower stem
+        for (let i = 0; i < 34; i++) {
+          const x = cx - 88 * s + i * 5.4 * s + Math.sin(i * 1.9) * 8 * s;
+          const h = 78 * s + seedNoise(i + 720) * 82 * s;
+          const wind = Math.sin(now * 0.0016 + i) * 0.08;
+          grass(
+            x,
+            groundY + 22 * s,
+            h,
+            (seedNoise(i + 730) - 0.5) * 0.95 + wind,
+            grow,
+          );
+        }
+
+        // front cyan leaves around root/base
+        for (let i = 0; i < 22; i++) {
+          const x = cx - 235 * s + i * 22 * s + Math.sin(i * 1.7) * 8 * s;
+          const y = groundY + 7 * s - (i % 5) * 8 * s;
           leaf(
             x,
             y,
             i % 2 ? -0.92 : 0.92,
-            27 * s + (i % 3) * 4 * s,
+            28 * s + (i % 3) * 4 * s,
             grow,
             true,
           );
         }
 
-        for (let i = 0; i < 14; i++) {
+        // small flowers on top of the grass, in front of the root
+        for (let i = 0; i < 16; i++) {
           const x = W * 0.05 + seedNoise(i + 600) * W * 0.9;
           const y = groundY + 16 * s + seedNoise(i + 610) * 24 * s;
           tinyFlower(x, y, (0.5 + seedNoise(i + 620) * 0.45) * s, grow);
